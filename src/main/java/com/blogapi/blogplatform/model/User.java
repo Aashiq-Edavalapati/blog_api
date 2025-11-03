@@ -1,16 +1,40 @@
 package com.blogapi.blogplatform.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Table(name = "blog_users")
+import java.util.ArrayList;
+import java.util.List;
+
+@Data // Lombok: Generates getters, setters, toString(), equals(), and hashCode()
+@NoArgsConstructor // Lombok: Generates a no-argument constructor
+@AllArgsConstructor // Lombok: Generates an all-argument constructor
+@Entity // JPA: Marks this class as a database entity
+@Table(name = "blog_users") // JPA: Specifies the table name as "blog_users" (to avoid conflict with "user" keyword)
 public class User {
+
+    @Id // JPA: Marks this field as the primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // DB: Auto-increments the ID
+    private Long id;
+
+    @Column(nullable = false, unique = true) // DB: Cannot be null, must be unique
+    private String username;
+
+    @Column(nullable = false, unique = true) // DB: Cannot be null, must be unique
+    private String email;
+
+    @Column(nullable = false) // DB: Cannot be null
+    private String password;
+
+    // --- RELATIONSHIP ---
+    @OneToMany(
+            mappedBy = "author", // "author" is the field name in the Post class
+            cascade = CascadeType.ALL, // If a user is deleted, delete all their posts
+            orphanRemoval = true, // If a post is removed from this list, delete it
+            fetch = FetchType.LAZY
+    )
+    private List<Post> posts = new ArrayList<>();
 
 }
