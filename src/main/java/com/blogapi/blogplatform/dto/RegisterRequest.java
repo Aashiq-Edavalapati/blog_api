@@ -2,6 +2,7 @@ package com.blogapi.blogplatform.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 // Java Record is a concise, immutable way to create a DTO(Data Transfer Objects)
@@ -17,5 +18,9 @@ public record RegisterRequest(
 
     @NotBlank(message = "Password cannot be blank")
     @Size(min = 6, max = 40, message = "Password must be between 6 and 40 characters")
+    @Pattern(
+            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
+            message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    )
     String password
 ) {}

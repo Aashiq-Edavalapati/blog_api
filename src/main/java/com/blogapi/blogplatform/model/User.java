@@ -4,8 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Data // Lombok: Generates getters, setters, toString(), equals(), and hashCode()
@@ -13,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor // Lombok: Generates an all-argument constructor
 @Entity // JPA: Marks this class as a database entity
 @Table(name = "blog_users") // JPA: Specifies the table name as "blog_users" (to avoid conflict with "user" keyword)
-public class User {
+public class User implements UserDetails {
 
     @Id // JPA: Marks this field as the primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // DB: Auto-increments the ID
@@ -37,4 +41,28 @@ public class User {
     )
     private List<Post> posts = new ArrayList<>();
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
