@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.Instant;
 import java.util.Date;
 
 @Component
@@ -36,7 +37,7 @@ public class JwtTokenProvider {
         User userPrincipal = (User) authentication.getPrincipal();
 
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + this.jwtExpirationInMs);
+        Date expiryDate = Date.from(Instant.now().plusMillis(Long.parseLong(this.jwtExpirationInMs)));
 
         // Build the JWT
         return Jwts.builder()
