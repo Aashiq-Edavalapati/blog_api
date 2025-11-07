@@ -1,9 +1,11 @@
 package com.blogapi.blogplatform.controller;
 
 import com.blogapi.blogplatform.model.Post;
+import com.blogapi.blogplatform.model.User;
 import com.blogapi.blogplatform.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,12 +38,10 @@ public class PostController {
 
     // POST /api/posts
     @PostMapping("/")
-    public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        // TODO: Get authorId from the authenticated user (Spring Security)
-        // For now, hardcoded authorId
-        Long tempAuthorId = 1L;
+    public ResponseEntity<Post> createPost(@RequestBody Post post, Authentication authentication) {
+        User currUser = (User) authentication.getPrincipal();
 
-        Post createdPost = postService.createPost(post, tempAuthorId);
+        Post createdPost = postService.createPost(post, currUser.getId());
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED); // 201 Created
     }
 
