@@ -1,5 +1,7 @@
 package com.blogapi.blogplatform.service.impl;
 
+import com.blogapi.blogplatform.exception.ResourceNotFoundException;
+import com.blogapi.blogplatform.exception.UnauthorizedException;
 import com.blogapi.blogplatform.model.Post;
 import com.blogapi.blogplatform.model.User;
 import com.blogapi.blogplatform.repository.PostRepository;
@@ -36,7 +38,7 @@ public class PostServiceImpl implements PostService {
     public Post createPost(Post post, Long authorId) {
         // 1. Find the author User by their ID
         User author = userRepository.findById(authorId)
-                .orElseThrow(() -> new RuntimeException("Error: Author not found with id: " + authorId));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", authorId));
 
         // 2. Set the found author on the post object
         post.setAuthor(author);
@@ -46,10 +48,20 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePost(Long postId) {
-        // TODO: Add logic to check if the current user is the author(Auth)
+    public void deletePost(Long postId, User currUser) {
+        // 1. Find the post by ID
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
 
-        // For now, just delete the post
+        // 2. Get the author of the post
+        User author = post.getAuthor();
+
+        // 3. Compare the author's ID with current user's ID
+        if (!author.getId().equals(currUser.getId())) {
+            throw new UnauthorizedException("You are not allowed to delete this post.");
+        }
+
+        // 4. If they match, delete the post
         postRepository.deleteById(postId);
     }
 

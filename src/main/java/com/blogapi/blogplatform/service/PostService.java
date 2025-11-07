@@ -1,6 +1,7 @@
 package com.blogapi.blogplatform.service;
 
 import com.blogapi.blogplatform.model.Post;
+import com.blogapi.blogplatform.model.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,6 @@ public interface PostService {
 
     Post createPost(Post post, Long authorId);
 
-    void deletePost(Long postId);
+    void deletePost(Long postId, User currUser);
 
 }

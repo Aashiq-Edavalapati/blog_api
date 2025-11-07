@@ -47,10 +47,11 @@ public class PostController {
 
     // DELETE /api/posts/{id}
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        // TODO: Add security to check if the user is the author
+    public ResponseEntity<Void> deletePost(@PathVariable Long id, Authentication authentication) {
+        // Get the curr authenticated user
+        User currUser = (User) authentication.getPrincipal();
 
-        postService.deletePost(id);
+        postService.deletePost(id, currUser);
         return ResponseEntity.noContent().build(); // 204 Successful deletion
     }
 
