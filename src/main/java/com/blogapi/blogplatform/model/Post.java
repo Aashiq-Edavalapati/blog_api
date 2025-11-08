@@ -8,6 +8,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -34,9 +36,16 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    // --- RELATIONSHIP ---
+    // --- RELATIONSHIP with USER ---
     @ManyToOne(fetch = FetchType.LAZY) // Many posts can belong to one use. FetchType.LAZY => Don't load the `User` data from the DB until we explicitly call post.getAuthor().
     @JoinColumn(name = "author_id", nullable = false) // Foreign key
     private User author;
 
+    // --- RELATIONSHIP with COMMENTS ---
+    @OneToMany(
+            mappedBy = "post", // post is the field name in Comment class
+            cascade = CascadeType.ALL, // If a Post is deleted, delete all its comments
+            orphanRemoval = true
+    )
+    private List<Comment> comments = new ArrayList<>();
 }
