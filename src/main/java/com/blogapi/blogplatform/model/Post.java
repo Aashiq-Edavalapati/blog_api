@@ -1,5 +1,6 @@
 package com.blogapi.blogplatform.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,6 +43,7 @@ public class Post {
     private User author;
 
     // --- RELATIONSHIP with COMMENTS ---
+    @JsonIgnore
     @OneToMany(
             mappedBy = "post", // post is the field name in Comment class
             cascade = CascadeType.ALL, // If a Post is deleted, delete all its comments

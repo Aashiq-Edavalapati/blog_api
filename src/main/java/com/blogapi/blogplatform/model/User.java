@@ -1,5 +1,6 @@
 package com.blogapi.blogplatform.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,7 @@ public class User implements UserDetails {
     private String password;
 
     // --- RELATIONSHIP ---
+    @JsonIgnore
     @OneToMany(
             mappedBy = "author", // "author" is the field name in the Post class
             cascade = CascadeType.ALL, // If a user is deleted, delete all their posts
@@ -41,6 +43,7 @@ public class User implements UserDetails {
     )
     private List<Post> posts = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(
             mappedBy = "author",
             cascade = CascadeType.ALL,
