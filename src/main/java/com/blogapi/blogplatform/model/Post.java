@@ -40,6 +40,7 @@ public class Post {
     // --- RELATIONSHIP with USER ---
     @ManyToOne(fetch = FetchType.LAZY) // Many posts can belong to one use. FetchType.LAZY => Don't load the `User` data from the DB until we explicitly call post.getAuthor().
     @JoinColumn(name = "author_id", nullable = false) // Foreign key
+    @JsonIgnore
     private User author;
 
     // --- RELATIONSHIP with COMMENTS ---

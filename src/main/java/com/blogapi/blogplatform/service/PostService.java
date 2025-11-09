@@ -1,5 +1,6 @@
 package com.blogapi.blogplatform.service;
 
+import com.blogapi.blogplatform.dto.PostUpdateRequest;
 import com.blogapi.blogplatform.model.Post;
 import com.blogapi.blogplatform.model.User;
 
@@ -16,5 +17,7 @@ public interface PostService {
     Post createPost(Post post, Long authorId);
 
     void deletePost(Long postId, User currUser);
+
+    Post updatePost(Long postId, PostUpdateRequest postUpdateRequest, User currUser);
 
 }

@@ -1,5 +1,6 @@
 package com.blogapi.blogplatform.service.impl;
 
+import com.blogapi.blogplatform.dto.PostUpdateRequest;
 import com.blogapi.blogplatform.exception.ResourceNotFoundException;
 import com.blogapi.blogplatform.exception.UnauthorizedException;
 import com.blogapi.blogplatform.model.Post;
@@ -63,6 +64,24 @@ public class PostServiceImpl implements PostService {
 
         // 4. If they match, delete the post
         postRepository.deleteById(postId);
+    }
+
+    @Override
+    public Post updatePost(Long postId, PostUpdateRequest postUpdateRequest, User currUser) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+
+        // Check if the current user is the author
+        if (!post.getAuthor().getId().equals(currUser.getId())) {
+            throw new UnauthorizedException("You are not authorized to update this post!");
+        }
+
+        // Update the fields
+        post.setTitle(postUpdateRequest.title());
+        post.setContent(postUpdateRequest.content());
+
+        // Save the post to DB
+        return postRepository.save(post);
     }
 
 }

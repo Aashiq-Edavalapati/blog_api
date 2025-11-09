@@ -1,8 +1,10 @@
 package com.blogapi.blogplatform.controller;
 
+import com.blogapi.blogplatform.dto.PostUpdateRequest;
 import com.blogapi.blogplatform.model.Post;
 import com.blogapi.blogplatform.model.User;
 import com.blogapi.blogplatform.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -55,4 +57,16 @@ public class PostController {
         return ResponseEntity.noContent().build(); // 204 Successful deletion
     }
 
+    // PUT /api/posts/{id}
+    @PutMapping("/{id}")
+    public ResponseEntity<Post> updatePost(
+            @PathVariable Long id,
+            @Valid @RequestBody PostUpdateRequest postUpdateRequest,
+            Authentication authentication
+    ) {
+        User currUser = (User) authentication.getPrincipal();
+        Post updatedPost = postService.updatePost(id, postUpdateRequest, currUser);
+
+        return ResponseEntity.ok(updatedPost);
+    }
 }
