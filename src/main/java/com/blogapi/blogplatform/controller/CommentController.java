@@ -2,6 +2,7 @@ package com.blogapi.blogplatform.controller;
 
 import com.blogapi.blogplatform.dto.CommentRequest;
 import com.blogapi.blogplatform.dto.CommentResponse;
+import com.blogapi.blogplatform.dto.CommentUpdateRequest;
 import com.blogapi.blogplatform.model.User;
 import com.blogapi.blogplatform.service.CommentService;
 import jakarta.validation.Valid;
@@ -39,6 +40,20 @@ public class CommentController {
     public ResponseEntity<List<CommentResponse>> getCommentsByPostId(@PathVariable Long postId) {
         List<CommentResponse> comments = commentService.getCommentsByPostId(postId);
         return ResponseEntity.ok(comments);
+    }
+
+    // PUT /api/posts/{postId}/comments/{commentId}
+    @PutMapping("/{commentId}")
+    public ResponseEntity<CommentResponse> updateComment(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @Valid @RequestBody CommentUpdateRequest commentRequest,
+            Authentication authentication
+    ) {
+        User currUser = (User) authentication.getPrincipal();
+        CommentResponse updatedComment = commentService.updateComment(commentId, commentRequest, currUser);
+
+        return ResponseEntity.ok(updatedComment);
     }
 
     // DELETE /api/posts/{postId}/comments/{commentId}

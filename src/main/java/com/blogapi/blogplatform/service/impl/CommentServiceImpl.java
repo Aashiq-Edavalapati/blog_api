@@ -2,6 +2,7 @@ package com.blogapi.blogplatform.service.impl;
 
 import com.blogapi.blogplatform.dto.CommentRequest;
 import com.blogapi.blogplatform.dto.CommentResponse;
+import com.blogapi.blogplatform.dto.CommentUpdateRequest;
 import com.blogapi.blogplatform.exception.ResourceNotFoundException;
 import com.blogapi.blogplatform.exception.UnauthorizedException;
 import com.blogapi.blogplatform.model.Comment;
@@ -9,7 +10,6 @@ import com.blogapi.blogplatform.model.Post;
 import com.blogapi.blogplatform.model.User;
 import com.blogapi.blogplatform.repository.CommentRepository;
 import com.blogapi.blogplatform.repository.PostRepository;
-import com.blogapi.blogplatform.repository.UserRepository;
 import com.blogapi.blogplatform.service.CommentService;
 import org.springframework.stereotype.Service;
 
@@ -80,5 +80,19 @@ public class CommentServiceImpl implements CommentService {
         }
 
         commentRepository.deleteById(commentId);
+    }
+
+    @Override
+    public CommentResponse updateComment(Long commentId, CommentUpdateRequest commentRequest, User currUser) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
+
+        if (!comment.getAuthor().getId().equals(currUser.getId())) {
+            throw new UnauthorizedException("You are not authorized to update this comment!");
+        }
+
+        comment.setContent(commentRequest.content());
+        Comment updatedComment = commentRepository.save(comment);
+        return mapToCommentResponse(comment);
     }
 }
